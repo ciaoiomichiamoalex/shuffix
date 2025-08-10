@@ -142,7 +142,7 @@ class Spotify:
         for track in tracks:
             items.append(f"spotify:track:{track['id']}")
 
-        for chunk in self._chunks(items):
+        for chunk in Spotify._chunks(items):
             if playlist_id: self._connection.playlist_remove_all_occurrences_of_items(playlist_id, chunk)
             else: self._connection.current_user_saved_tracks_delete(chunk)
             time.sleep(0.2)
@@ -163,7 +163,7 @@ class Spotify:
         for track in tracks:
             items.append(f"spotify:track:{track['id']}")
 
-        for chunk in self._chunks(items):
+        for chunk in Spotify._chunks(items):
             if playlist_id: self._connection.playlist_add_items(playlist_id, chunk)
             else: self._connection.current_user_saved_tracks_add(chunk)
             time.sleep(0.2)
