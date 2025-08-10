@@ -117,7 +117,7 @@ class Spotify:
         return res
 
     @staticmethod
-    def chunks(items: list[str]) -> Generator[list[str]]:
+    def _chunks(items: list[str]) -> Generator[list[str]]:
         """
         Split a list of string in sub-list of 50 items each one.
 
@@ -142,7 +142,7 @@ class Spotify:
         for track in tracks:
             items.append(f"spotify:track:{track['id']}")
 
-        for chunk in self.chunks(items):
+        for chunk in self._chunks(items):
             if playlist_id: self._connection.playlist_remove_all_occurrences_of_items(playlist_id, chunk)
             else: self._connection.current_user_saved_tracks_delete(chunk)
             time.sleep(0.2)
@@ -163,7 +163,7 @@ class Spotify:
         for track in tracks:
             items.append(f"spotify:track:{track['id']}")
 
-        for chunk in self.chunks(items):
+        for chunk in self._chunks(items):
             if playlist_id: self._connection.playlist_add_items(playlist_id, chunk)
             else: self._connection.current_user_saved_tracks_add(chunk)
             time.sleep(0.2)
