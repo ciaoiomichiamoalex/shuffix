@@ -15,7 +15,8 @@ class Spotify:
     """
     The Spotify object allows for manage playlist songs.
     """
-    def __init__(self, cfg_in: str | Path) -> None:
+    def __init__(self,
+                 cfg_in: str | Path) -> None:
         """
         Read from a JSON config file your account credentials and start the connection.
         The class also open a connection to a local SQLite database in the project root folder.
@@ -76,7 +77,8 @@ class Spotify:
             offset += 50
         return res
 
-    def get_tracks(self, playlist_id: str = None) -> list[dict]:
+    def get_tracks(self,
+                   playlist_id: str = None) -> list[dict]:
         """
         Return and save on the local database the list of tracks in a specific user playlist.
         If the playlist_id argument is None, will be returned the user saved tracks.
@@ -127,7 +129,8 @@ class Spotify:
         for index in range(0, len(items), 50):
             yield items[index:index + 50]
 
-    def remove_tracks(self, playlist_id: str = None) -> None:
+    def remove_tracks(self,
+                      playlist_id: str = None) -> None:
         """
         Remove all tracks saved on local database from a specific user playlist.
         If the playlist_id argument is None, will be removed from the user saved tracks.
@@ -144,7 +147,9 @@ class Spotify:
             else: self._connection.current_user_saved_tracks_delete(chunk)
             time.sleep(0.2)
 
-    def save_tracks(self, order_by: str, playlist_id: str = None) -> None:
+    def save_tracks(self,
+                    order_by: str,
+                    playlist_id: str = None) -> None:
         """
         Add all tracks saved on local database to a specific user playlist.
         If the playlist_id argument is None, will be added on the user saved tracks.
