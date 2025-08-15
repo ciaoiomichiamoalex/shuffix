@@ -5,11 +5,11 @@ from tabulate import tabulate
 from shuffix import PATH_CFG, Spotify
 
 ORDERINGS = (
-    {'name': 'Album', 'order_by': 'album ASC, disc_number ASC, track_number ASC'},
-    {'name': 'Artist', 'order_by': 'artists ASC, release_date ASC, album ASC, disc_number ASC, track_number ASC'},
+    {'name': 'Album', 'order_by': 'album COLLATE NOCASE ASC, disc_number ASC, track_number ASC'},
+    {'name': 'Artist', 'order_by': 'artists COLLATE NOCASE ASC, release_date ASC, album COLLATE NOCASE ASC, disc_number ASC, track_number ASC'},
     {'name': 'Random', 'order_by': 'RANDOM() ASC'},
-    {'name': 'Release date', 'order_by': 'release_date DESC, album ASC, disc_number ASC, track_number ASC'},
-    {'name': 'Track name', 'order_by': 'name ASC, album ASC'}
+    {'name': 'Release date', 'order_by': 'release_date DESC, album COLLATE NOCASE ASC, disc_number ASC, track_number ASC'},
+    {'name': 'Track name', 'order_by': 'name COLLATE NOCASE ASC, album COLLATE NOCASE ASC'}
 )
 
 if __name__ == '__main__':
