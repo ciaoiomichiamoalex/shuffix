@@ -96,21 +96,22 @@ class Spotify:
                       else self._connection.current_user_saved_tracks(limit=50, offset=offset))
 
             for track in tracks['items']:
-                res.append({
-                    'id': track['track']['id'],
-                    'playlist_id': playlist_id,
-                    'name': track['track']['name'],
-                    'album': track['track']['album']['name'],
-                    'artists': ', '.join(artist['name'] for artist in track['track']['album']['artists']),
-                    'release_date': (
-                        f"{track['track']['album']['release_date']}-01-01"
-                        if re.search(r'^\d{4}$', track['track']['album']['release_date'])
-                        else track['track']['album']['release_date']
-                    ),
-                    'disc_number': track['track']['disc_number'],
-                    'track_number': track['track']['track_number']
-                })
-                self._querier.run(QUERY_INSERT_TRACK, *res[-1].values())
+                if not track['is_local']:
+                    res.append({
+                        'id': track['track']['id'],
+                        'playlist_id': playlist_id,
+                        'name': track['track']['name'],
+                        'album': track['track']['album']['name'],
+                        'artists': ', '.join(artist['name'] for artist in track['track']['album']['artists']),
+                        'release_date': (
+                            f"{track['track']['album']['release_date']}-01-01"
+                            if re.search(r'^\d{4}$', track['track']['album']['release_date'])
+                            else track['track']['album']['release_date']
+                        ),
+                        'disc_number': track['track']['disc_number'],
+                        'track_number': track['track']['track_number']
+                    })
+                    self._querier.run(QUERY_INSERT_TRACK, *res[-1].values())
 
             if not tracks['next']: break
             offset += 50
