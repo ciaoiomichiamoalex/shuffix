@@ -25,6 +25,7 @@ class Spotify:
         :type cfg_in: str | Path
         """
         cfg_in = Path(cfg_in).resolve()
+        # if input path is a directory search for default config filename
         if cfg_in.is_dir():
             cfg_in = cfg_in / 'shuffix.json'
 
@@ -47,6 +48,7 @@ class Spotify:
             conn_in=(PATH_PRJ / 'shuffix.db'),
             save_changes=True
         )
+        # create database tables if their not exists
         self._querier.run(QUERY_CREATE_PLAYLIST)
         self._querier.run(QUERY_CREATE_TRACK)
 
@@ -63,6 +65,7 @@ class Spotify:
         self._querier.run(QUERY_DELETE_PLAYLIST)
         offset, res = 0, []
         while True:
+            # get 50 user playlist at time
             playlists = self._connection.current_user_playlists(limit=50, offset=offset)
 
             for playlist in playlists['items']:
@@ -91,7 +94,8 @@ class Spotify:
         self._querier.run(QUERY_DELETE_TRACK)
         offset, res = 0, []
         while True:
-            tracks = (self._connection.playlist_items(playlist_id, limit=50, offset=offset)
+            # get 100 songs at time or 50 if it's on user saved songs
+            tracks = (self._connection.playlist_items(playlist_id, limit=100, offset=offset)
                       if playlist_id
                       else self._connection.current_user_saved_tracks(limit=50, offset=offset))
 
@@ -104,6 +108,7 @@ class Spotify:
                         'album': track['track']['album']['name'],
                         'artists': ', '.join(artist['name'] for artist in track['track']['album']['artists']),
                         'release_date': (
+                            # add first of january if the date is only year
                             f"{track['track']['album']['release_date']}-01-01"
                             if re.search(r'^\d{4}$', track['track']['album']['release_date'])
                             else track['track']['album']['release_date']
@@ -114,7 +119,7 @@ class Spotify:
                     self._querier.run(QUERY_INSERT_TRACK, *res[-1].values())
 
             if not tracks['next']: break
-            offset += 50
+            offset += (100 if playlist_id else 50)
         return res
 
     @staticmethod
@@ -146,6 +151,7 @@ class Spotify:
         for chunk in Spotify._chunks(items):
             if playlist_id: self._connection.playlist_remove_all_occurrences_of_items(playlist_id, chunk)
             else: self._connection.current_user_saved_tracks_delete(chunk)
+            # max 5 call per second, to not get timeout error
             time.sleep(0.2)
 
     def save_tracks(self,
@@ -167,4 +173,5 @@ class Spotify:
         for chunk in Spotify._chunks(items):
             if playlist_id: self._connection.playlist_add_items(playlist_id, chunk)
             else: self._connection.current_user_saved_tracks_add(chunk)
+            # max 5 call per second, to not get timeout error
             time.sleep(0.2)

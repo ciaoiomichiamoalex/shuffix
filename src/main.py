@@ -16,6 +16,7 @@ if __name__ == '__main__':
     spotify: Spotify = Spotify(PATH_CFG)
 
     playlists = spotify.get_playlists()
+    # add user saved songs to playlists list
     playlists.insert(0, {
         'id': None,
         'name': 'Liked songs',
@@ -37,14 +38,18 @@ if __name__ == '__main__':
     choice = int(input('\n#> choose ordering index: '))
     order_by = (ORDERINGS[choice]['order_by']
                 if playlist_id
+                # invert ascending with descending order for user saved songs
                 else re.sub(r'\b(ASC|DESC)\b',
                             lambda m: {'ASC': 'DESC', 'DESC': 'ASC'}[m.group(1).upper()],
                             ORDERINGS[choice]['order_by'],
                             flags=re.IGNORECASE)
                 )
 
+    # remove and resave all songs in the selected playlist
     print('\n#> removing tracks... ', end='')
     spotify.remove_tracks(playlist_id)
     print('ok\n#> saving tracks... ', end='')
     spotify.save_tracks(order_by, playlist_id)
     print('ok')
+
+    del spotify
