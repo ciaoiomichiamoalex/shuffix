@@ -11,6 +11,19 @@ QUERY_CREATE_PLAYLIST = """\
     )
     ;
 """
+QUERY_DELETE_PLAYLIST = """\
+    DELETE FROM playlist
+    ;
+"""
+QUERY_INSERT_PLAYLIST = """\
+    INSERT INTO playlist (
+        id,
+        name,
+        total_tracks
+    ) VALUES (?, ?, ?)
+    ;
+"""
+
 QUERY_CREATE_TRACK = """\
     CREATE TABLE IF NOT EXISTS track (
         id TEXT PRIMARY KEY,
@@ -25,10 +38,6 @@ QUERY_CREATE_TRACK = """\
     )
     ;
 """
-QUERY_DELETE_PLAYLIST = """\
-    DELETE FROM playlist
-    ;
-"""
 QUERY_DELETE_TRACK = """\
     DELETE FROM track
     ;
@@ -37,14 +46,6 @@ QUERY_GET_TRACKS = """\
     SELECT id
     FROM track
     ORDER BY %(order_by)s
-    ;
-"""
-QUERY_INSERT_PLAYLIST = """\
-    INSERT INTO playlist (
-        id,
-        name,
-        total_tracks
-    ) VALUES (?, ?, ?)
     ;
 """
 QUERY_INSERT_TRACK = """\
