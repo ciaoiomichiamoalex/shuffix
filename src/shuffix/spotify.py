@@ -100,7 +100,7 @@ class Spotify:
                       else self._connection.current_user_saved_tracks(limit=50, offset=offset))
 
             for track in tracks['items']:
-                if not track['is_local']:
+                if not track.get('is_local', track['track']['is_local']):
                     res.append({
                         'id': track['track']['id'],
                         'playlist_id': playlist_id,
